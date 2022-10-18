@@ -125,9 +125,9 @@ application and deploying it to Render.
 
 ## Creating a Rails App to Deploy
 
-We'll be following the steps in Render's [Getting Started with Ruby on
-Rails][getting started with rails] guide, so if you get stuck and are looking for
-more assistance, check that guide first.
+We'll be following the steps in the [Getting Started with Ruby on Rails on
+Render][getting started with rails] guide, so if you get stuck and are looking
+for more assistance, check that guide first.
 
 The first thing we'll need to do is create our new Rails application. Make
 sure you're in a non-lab directory, then run:
@@ -292,9 +292,9 @@ $ git commit -m 'Initial commit'
 
 Then, on the repository list page of your GitHub account, click the green "New"
 button in the upper right corner. (Alternatively, you can navigate to
-[https://github.com/new][https://github.com/new]). In the form that opens, enter
+[https://github.com/new](https://github.com/new)). In the form that opens, enter
 a name for your repo (`bird-app` makes sense) and make sure "Public" is
-selected. You can leave everything else as is. Click the "Create respository"
+selected. You can leave everything else as is. Click the "Create repository"
 button at the bottom of the page.
 
 On the next page, copy the code in the "push an existing repository from the
@@ -317,8 +317,8 @@ The remaining fields can be left as is.
 
 ![Creating a new database](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/create-database.png)
 
-Scroll to the bottom of the page and click "Create Database". Leave the page
-open — you'll need to copy information from it in the next step.
+Scroll to the bottom of the page and click "Create Database". Leave the database
+page open — you'll need to copy information from it in the next step.
 
 ### Create the Web Service on Render
 
@@ -349,7 +349,7 @@ Scroll down to the bottom of the page and click "Create Web Service". The deploy
 process will begin automatically. Warning: this process can take a while! You
 might want to go get a snack or go for a walk.
 
-When the deployment is complete, you should see something like this:
+When the deployment is complete, you should see something like this in the log:
 
 ![Log showing successful build and deploy](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/successful-deploy-log.png)
 
@@ -385,10 +385,10 @@ $ git push
 ```
 
 After pushing the new code, Render should automatically being re-deploying it,
-although there might be a bit of a delay. You can also return to the app's page
-on Render, click the "Manual Deploy" button in the upper right corner and select
-"Deploy latest commit." You will then see the deploy from the new commit in
-progress:
+although there might be a bit of a delay. You can also start the deploy
+manually: return to the app's page on Render, click the "Manual Deploy" button
+in the upper right corner and select "Deploy latest commit." You will now see
+the deploy from the new commit in progress:
 
 ![Deploying new action](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/deploying-new-content.png)
 
