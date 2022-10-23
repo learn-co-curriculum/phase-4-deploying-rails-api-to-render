@@ -4,6 +4,7 @@
 
 - Set up your local environment for deploying with Render
 - Deploy a basic Rails application to Render
+- Back up and re-deploy our apps' databases
 
 ## Introduction
 
@@ -144,7 +145,7 @@ Render, which runs Ubuntu. This way, regardless of what OS you're using in
 development, `bundler` will be able to install the same gems on Render using any
 Ubuntu-specific gem dependencies.
 
-`cd` into the app, and run this command:
+`cd` into the app's directory, and run this command:
 
 ```console
 $ bundle lock --add-platform x86_64-linux
@@ -326,13 +327,13 @@ database. But then what happens if you want to deploy additional apps to Render?
 You can probably see how using a single database for multiple apps could get
 complicated very quickly and potentially cause problems. Fortunately, Render
 allows users to create [multiple databases within a single PostgreSQL
-instance][multiple dbs] so you can have separate databases for each app you
+instance][multiple dbs] so you can have a separate database for each app you
 deploy.
 
 Let's start by creating the PostgreSQL instance.
 
 Go to the [Render dashboard][], click the "New +" button and select
-"PostgreSQL". Enter a name for your database — this can be whatever you like.
+"PostgreSQL". Enter a name for your database. This can be whatever you like —
 We're using `my_database`. The remaining fields can be left as is.
 
 ![Creating a new database](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/create-database.png)
@@ -363,12 +364,12 @@ been added to the list of databases.
 
 You can now exit `psql` using the `\q` command.
 
-**Note**: The Render database page will not show the information about the
-`bird_app_db` database; it will only show the name you assigned when you created
-the PostgreSQL instance on Render (`my_database`). To see any other databases
-you have on your PostgreSQL instance, you'll need to use `psql`. For now, be
-sure to make a note of your new database's name as we'll need to use it in the
-next step.
+ > **Note**: The Render database page will not show the information about the
+ > `bird_app_db` database; it will only show the name you assigned when you
+ > created the PostgreSQL instance on Render (`my_database`). To see any other
+ > databases you have on your PostgreSQL instance, you'll need to use `psql`.
+ > For now, be sure to make a note of your new database's name as we'll need to
+ > use it in the next step.
 
 ### Create the Web Service on Render
 
@@ -409,7 +410,8 @@ Scroll down to the bottom of the page and click "Create Web Service". The deploy
 process will begin automatically. Warning: this process can take a while! You
 might want to go for a walk or get a snack.
 
-When the deploy process is complete, you should see something like this in the log:
+When the deploy process is complete, you should see something like this in the
+log:
 
 ![Log showing successful build and deploy](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/successful-deploy-log.png)
 
@@ -441,8 +443,7 @@ however, we need to modify the build script, `bin/birds-build.sh`. The reason
 for this is the script currently contains the `db:seed` command. If we keep that
 command in the script, it will re-seed the data every time we push up a change,
 resulting in duplicate records. Go ahead and open the script and delete (or
-comment out) the last line. (Another option is to leave the script as is and
-delete the seed data from the `db/seeds.rb` file.)
+comment out) the last line.
 
 Now we can go ahead and make a commit and push it to GitHub:
 
@@ -643,10 +644,10 @@ run it in the terminal.
 ### Connecting the New Databases to Your Web Services
 
 The final step in the process is to update the bird app's Web Service so that it
-points to the new database. From the Render database, select the bird app, then
+points to the new database. From the Render dashboard, select the bird app, then
 click "Environment" in the nav on the left. Delete the value associated with the
 DATABASE_URL key and replace it with the Internal URL for the new `bird_app_db`
-database. Now, if you click the app's URL, you should see the JSON with the list
+database. Now, if you click the app's URL, you should see the JSON for the list
 of birds.
 
 ## Conclusion
