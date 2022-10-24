@@ -25,10 +25,28 @@ following:
 ### Sign Up for a Render Account
 
 You can sign up at for a free account at
-[https://dashboard.render.com/register][Render signup]. Sign up using whichever
-method you prefer then, from the Render dashboard, go ahead and connect Render
-to your GitHub account. Once you've done that, you should see all your repos
-listed in the "Connect a repository" window.
+[https://dashboard.render.com/register][Render signup]. We recommend that you
+sign up using GitHub as that will make it a little easier for you to connect
+Render to your GitHub account.
+
+Once you've completed the signup process, you will be taken to the Render
+dashboard:
+
+![Render dashboard](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/render-dashboard.png)
+
+Click the "New Web Service" button in the "Web Services" box. On the next page,
+you will see a GitHub heading on the right side and below that a link that's
+labeled either "Connect account" or "Configure account".
+
+![Connect GitHub](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/configure-github.png)
+
+Click that link; a modal will appear asking you for permission to install Render
+on your GitHub account:
+
+![Install Render](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/install-render.png)
+
+Click "Install." You should then be taken back to the "Create a New Web Service"
+page, which should now show a list of your GitHub repos.
 
 ### Install the Latest Ruby Version
 
@@ -334,7 +352,7 @@ Let's start by creating the PostgreSQL instance.
 
 Go to the [Render dashboard][], click the "New +" button and select
 "PostgreSQL". Enter a name for your database. This can be whatever you like —
-We're using `my_database`. The remaining fields can be left as is.
+we're using `my_database`. The remaining fields can be left as is.
 
 ![Creating a new database](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/create-database.png)
 
@@ -448,7 +466,7 @@ comment out) the last line.
 Now we can go ahead and make a commit and push it to GitHub:
 
 ```console
-$ git add app/controllers/birds_controller.rb
+$ git add .
 $ git commit -m 'Add show action'
 $ git push
 ```
@@ -571,9 +589,10 @@ also stay the same. After that, we'll add the following options:
 --format=custom --no-acl --no-owner
 ```
 
-Then finally comes the name of the database we're backing up, followed by a `>`,
-then the name of the file that we'll store the backup in, with the `.sql`
-extension:
+The final component of the original connection string is the name of the
+database. Leave the name and, after it, add a `>` to indicate that we want the
+results of the command to be written to a file, followed by the name we want to
+use for the backup file, with the `.sql` extension:
 
 ```sh
 my_database > my_database.sql
@@ -585,12 +604,17 @@ The updated string will look something like this:
 PGPASSWORD=############# pg_dump -h ################-postgres.render.com -U my_database_user --format=custom --no-acl --no-owner my_database > my_database.sql
 ```
 
-Go ahead and run the command. It will not print any output, but if you run `ls`,
-you should see the newly-created `.sql` file in the current directory.
+`cd` out of the app's directory, then run the command. It will not print any
+output, but if you run `ls`, you should see the newly-created `.sql` file in the
+current directory.
 
 Repeat the process above for the `bird_app_db` database. The string will be
 exactly the same except for the last two elements: the name of the database and
 the name of the backup file.
+
+> **Note**: Take care not to store any of the PSQL commands inside a project
+> repo. Those commands contain secure information so you don't want them to be
+> deployed to GitHub accidentally!
 
 ### Replacing the Expiring PostgreSQL Instance
 
@@ -603,16 +627,17 @@ bottom of the page, and click "Create Database."
 ### Restoring the Databases to the New Instance
 
 Once the new instance has been created (which might take a few minutes), copy
-the PSQL connection string and paste it into your code editor. Once again, we'll
-be editing this string, this time to create the command to restore the databases
-from the backup files.
+the new PSQL connection string and paste it into your code editor. Once again,
+we'll be editing this string, this time to create the command to restore the
+databases from the backup files.
 
 The restore string will consist of the following:
 
 - the database password,
 - the `pg_restore` command,
-- the options: `--verbose --clean --no-acl --no-owner`,
 - the host,
+- the user,
+- the options: `--verbose --clean --no-acl --no-owner`,
 - the `-d` flag (for `dbname`) followed by the name of the new database you're
   restoring the data to (`my_new_db`),
 - the name of the `.sql` file you're restoring from
@@ -620,7 +645,7 @@ The restore string will consist of the following:
 The final string will look something like this:
 
 ```text
-PGPASSWORD=################ pg_restore --verbose --clean --no-acl --no-owner -h #################-postgres.render.com -U my_new_db_user -d my_new_db my_database.sql
+PGPASSWORD=################ pg_restore -h #################-postgres.render.com -U my_new_db_user --verbose --clean --no-acl --no-owner -d my_new_db my_database.sql
 ```
 
 Run the command in the terminal. You should see a flurry of activity as it
