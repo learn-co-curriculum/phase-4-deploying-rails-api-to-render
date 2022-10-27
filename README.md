@@ -34,9 +34,10 @@ dashboard:
 
 ![Render dashboard](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/render-dashboard.png)
 
-Click the "New Web Service" button in the "Web Services" box. On the next page,
-you will see a GitHub heading on the right side and below that a link that's
-labeled either "Connect account" or "Configure account".
+ In order to connect Render to your GitHub account, you'll need to click the
+"New Web Service" button in the "Web Services" box. On the next page, you will
+see a GitHub heading on the right side and below that a link that's labeled
+either "Connect account" or "Configure account".
 
 ![Connect GitHub](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/configure-github.png)
 
@@ -46,7 +47,9 @@ on your GitHub account:
 ![Install Render](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/install-render.png)
 
 Click "Install." You should then be taken back to the "Create a New Web Service"
-page, which should now show a list of your GitHub repos.
+page, which should now show a list of your GitHub repos. We won't actually
+create a web service just yet so you are free to navigate away from the page at
+this point.
 
 ### Install the Latest Ruby Version
 
