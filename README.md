@@ -24,7 +24,7 @@ following:
 
 ### Sign Up for a Render Account
 
-You can sign up at for a free account at
+You can sign up for a free account at
 [https://dashboard.render.com/register][Render signup]. We recommend that you
 sign up using GitHub as that will make it a little easier for you to connect
 Render to your GitHub account.
