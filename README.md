@@ -27,7 +27,7 @@ following:
 You can sign up for a free account at
 [https://dashboard.render.com/register][Render signup]. We recommend that you
 sign up using GitHub as that will make it a little easier for you to connect
-Render to your GitHub account.
+Render to your GitHub account. The instructions below assume you've done that.
 
 Once you've completed the signup process, you will be taken to the Render
 dashboard:
@@ -36,8 +36,9 @@ dashboard:
 
  In order to connect Render to your GitHub account, you'll need to click the
 "New Web Service" button in the "Web Services" box. On the next page, you will
-see a GitHub heading on the right side and below that a link that's labeled
-either "Connect account" or "Configure account".
+see a GitHub heading on the right side and below that a link labeled "Configure
+account". (If you didn't sign up using GitHub, it will say "Connect account"
+instead.)
 
 ![Connect GitHub](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/configure-github.png)
 
