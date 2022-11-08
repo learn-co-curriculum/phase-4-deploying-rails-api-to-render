@@ -4,7 +4,6 @@
 
 - Set up your local environment for deploying with Render
 - Deploy a basic Rails application to Render
-- Back up and re-deploy our apps' databases
 
 ## Introduction
 
@@ -325,8 +324,8 @@ Then, on the repository list page of your GitHub account, click the green "New"
 button in the upper right corner. (Alternatively, you can navigate to
 [https://github.com/new](https://github.com/new)). In the form that opens, enter
 a name for your repo (`bird-app` makes sense) and make sure "Public" is
-selected. You can leave everything else as is. Click the "Create repository"
-button at the bottom of the page.
+selected; leave everything else as is. Click the "Create repository" button at
+the bottom of the page.
 
 On the next page, copy the code in the "push an existing repository from the
 command line" section and run it in your terminal:
@@ -535,8 +534,7 @@ Services](https://render.com/docs/free#free-web-services):
 > comes in after a period of inactivity.
 
 This means that, when you try to navigate to your app in the browser, it might
-take a while to load — in our testing, it was often longer than 30 seconds, and
-sometimes quite a bit longer!
+take a while to load.
 
 ### Free PostgreSQL Databases
 
@@ -546,150 +544,53 @@ PostgreSQL instance from Render, create a new PostgreSQL instance, and populate
 it from the database backups. Render should send an email warning you that your
 database will be expiring soon.
 
-## Backing Up and Recreating Your Databases on Render
-
-**Note:** You do not need to complete the steps in this section until you get
-close to the end of the 90 days. Feel free to skip this section until then if
-you prefer.
-
-Before we launch into the instructions for backing up and recreating your Render
-PostgreSQL instance, let's take a closer look at the PSQL connection string. To
-get the connection string, navigate to your database in the Render dashboard,
-click the connect button then the "External Connection" tab, then copy/paste the
-"PSQL Command" into your text editor. It will look something like this:
-
-```text
-PGPASSWORD=############# psql -h ################-postgres.render.com -U my_database_user my_database
-```
-
-The first element is the password for your database, which will be a
-32-character string. Next is the command you're running, in this case, `psql`.
-The next component is the host (indicated by the `-h` flag), which will end with
-"-postgres.render.com". Next is the name of the database user (indicated by the
-`-U` flag), followed by the name of the database itself.
-
-If you paste the connection string into your terminal and run it, then run the
-`\l` command to list your databases, you'll see that the username and database
-name match the entry for your PostgreSQL instance in the table that's printed.
-You should also see the `bird_app_db` in the list. Note that the username is the
-same as for the PostgreSQL instance.
-
-### Backing Up Our Databases
-
-To back up our databases, we're going to modify the connection string. We'll do
-that once for each of the two databases we need to back up. We recommending
-making the edits to the string in your text editor then copy/pasting it into the
-terminal when you're done.
-
-> **Note:** Technically, we don't need to back up `my_database` because we don't
-> have any data stored in it. We'll do it here to demonstrate the process of
-> backing up and restoring multiple databases.
-
-The first part of the string, the password, will remain the same. The `psql`
-command should be updated to `pg_dump` instead. The host and username should
-also stay the same. After that, we'll add the following options:
-
-```sh
---format=custom --no-acl --no-owner
-```
-
-The final component of the original connection string is the name of the
-database. Leave the name and, after it, add a `>` to indicate that we want the
-results of the command to be written to a file, followed by the name we want to
-use for the backup file, with the `.sql` extension:
-
-```sh
-my_database > my_database.sql
-```
-
-The updated string will look something like this:
-
-```sh
-PGPASSWORD=############# pg_dump -h ################-postgres.render.com -U my_database_user --format=custom --no-acl --no-owner my_database > my_database.sql
-```
-
-`cd` out of the app's directory, then run the command. It will not print any
-output, but if you run `ls`, you should see the newly-created `.sql` file in the
-current directory.
-
-Repeat the process above for the `bird_app_db` database. The string will be
-exactly the same except for the last two elements: the name of the database and
-the name of the backup file.
-
-> **Note**: Take care not to store any of the PSQL commands inside a project
-> repo. Those commands contain secure information so you don't want them to be
-> deployed to GitHub accidentally!
-
-### Replacing the Expiring PostgreSQL Instance
-
-Return to the database page in the Render dashboard. Scroll to the bottom of the
-page, click "Delete Database" and follow the instructions. Next, create a new
-PostgreSQL instance by clicking the "New +" button and selecting PostgreSQL.
-Give your new instance a name (we'll use `my_new_db`), then scroll down to the
-bottom of the page, and click "Create Database."
-
-### Restoring the Databases to the New Instance
-
-Once the new instance has been created (which might take a few minutes), copy
-the new PSQL connection string and paste it into your code editor. Once again,
-we'll be editing this string, this time to create the command to restore the
-databases from the backup files.
-
-The restore string will consist of the following:
-
-- the database password,
-- the `pg_restore` command,
-- the host,
-- the user,
-- the options: `--verbose --clean --no-acl --no-owner`,
-- the `-d` flag (for `dbname`) followed by the name of the new database you're
-  restoring the data to (`my_new_db`),
-- the name of the `.sql` file you're restoring from
-
-The final string will look something like this:
-
-```text
-PGPASSWORD=################ pg_restore -h #################-postgres.render.com -U my_new_db_user --verbose --clean --no-acl --no-owner -d my_new_db my_database.sql
-```
-
-Run the command in the terminal. You should see a flurry of activity as it
-creates the database tables.
-
-We've restored the main database for our PostgreSQL instance, so the next step
-is to restore the database we created for our bird app. Before you can do that,
-you'll first need to create the new database in PSQL. Execute the PSQL
-connection string for the new PostgreSQL instance to launch the interactive
-terminal, then run the CREATE DATABASE command (you can use the same database
-name or a different one, as you prefer):
-
-```sql
-CREATE DATABASE bird_app_db;
-```
-
-Once you've done that, you can restore the bird app data to the new database.
-Update the restore command, changing the database name and backup file name, and
-run it in the terminal.
-
-### Connecting the New Databases to Your Web Services
-
-The final step in the process is to update the bird app's Web Service so that it
-points to the new database. From the Render dashboard, select the bird app, then
-click "Environment" in the nav on the left. Delete the value associated with the
-DATABASE_URL key and replace it with the Internal URL for the new `bird_app_db`
-database. Now, if you click the app's URL, you should see the JSON for the list
-of birds.
+We will go over the process for backing up and recreating your database — along
+with some other tips for using databases with Render — in the next lesson.
 
 ## Conclusion
 
 Congrats on deploying your first Rails app to the world wide web! Understanding
 the deployment process and what it takes to run your application on another
-computer is an important step toward becoming a full-stack developer. Like
-anything new, this process can be daunting the first time you try it, but with
-practice and exposure, you'll build confidence over time.
+computer is an important step toward becoming a full-stack developer.
 
-In the next lesson, we'll work on deploying a more complex application with a
-Rails API backend and a React frontend, and talk through some of the challenges
-of running these two applications together.
+We've covered a lot of material in this lesson, but the good news is that the
+process will be simpler moving forward now that you have the environment set up
+and have created your PostgreSQL instance on Render. We will also provide a
+template later in this section for a Rails/React app that is already configured
+for Render (although you are always free to set it up yourself if you prefer).
+
+With these things in place, the process of deploying consists of two steps: 1)
+creating the database, and 2) creating the web service.
+
+To review, the process is:
+
+1. On the page for your PostgreSQL instance, scroll down to the "Connections"
+   section and copy the PSQL command.
+2. Run the command in the terminal.
+3. At the PSQL prompt, run the command to create the database: `CREATE DATABASE
+   <db_name>;`.
+4. Run `\q` to exit PSQL.
+5. In Render, click the "New+" button and select "Web Service".
+6. Enter a name for your app and set the Environment to Ruby.
+7. Set the Build Command to `./bin/<name-of-build-script>.sh`.
+8. Set the Start Command to `bundle exec puma -C config/puma.rb`.
+9. Click the "Advanced" button then "Add Environment Variable".
+10. Enter `DATABASE_URL` in the first box.
+11. Open a new tab and navigate to the database page. Click the "Connect" button
+    in the upper right corner, copy the Internal Database URL, and paste it into
+    the value box. Don't forget to replace the PostgreSQL instance name at the
+    end of the URL with the name of the database you created in step 3.
+12. Click the "Advanced" button again, then "Add Environment Variable", and
+    enter `RAILS_MASTER_KEY` in the first box.
+13. Navigate to the `config/master.key` file in your app's files, copy the value
+    in that file, and paste it into the second box.
+14. Scroll down to the bottom of the page and click "Create Web Service". The
+    deploy process will begin automatically.
+
+Once the app is deployed, adding new features is simply a matter of pushing the
+changes up to GitHub and re-starting the deploy process. To do that, return to
+the app's page on Render, click the "Manual Deploy" button in the upper right
+corner and select "Deploy latest commit."
 
 ## Check For Understanding
 
