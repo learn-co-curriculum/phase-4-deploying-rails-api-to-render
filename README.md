@@ -24,7 +24,7 @@ following:
 ### Sign Up for a Render Account
 
 You can sign up for a free account at
-[https://dashboard.render.com/register][Render signup]. We recommend that you
+[https://dashboard.render.com/register][render signup]. We recommend that you
 sign up using GitHub as that will make it a little easier for you to connect
 Render to your GitHub account. The instructions below assume you've done that.
 
@@ -33,9 +33,9 @@ dashboard:
 
 ![Render dashboard](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/render-dashboard.png)
 
- In order to connect Render to your GitHub account, you'll need to click the
-"New Web Service" button in the "Web Services" box. On the next page, you will
-see a GitHub heading on the right side and below that a link labeled "Configure
+In order to connect Render to your GitHub account, you'll need to click the "New
+Web Service" button in the "Web Services" box. On the next page, you will see a
+GitHub heading on the right side and below that a link labeled "Configure
 account". (If you didn't sign up using GitHub, it will say "Connect account"
 instead.)
 
@@ -151,8 +151,8 @@ We'll be following the steps in the [Getting Started with Ruby on Rails on
 Render][getting started with rails] guide, so if you get stuck and are looking
 for more assistance, check that guide first.
 
-The first thing we'll need to do is create our new Rails application. Make
-sure you're in a non-lab directory, then run:
+The first thing we'll need to do is create our new Rails application. Make sure
+you're in a non-lab directory, then run:
 
 ```console
 $ rails new bird-app --api --minimal --database=postgresql
@@ -286,7 +286,7 @@ set -o errexit
 bundle install
 # bundle exec rake assets:precompile # These lines are commented out because we have an API only app
 # bundle exec rake assets:clean
-bundle exec rake db:migrate 
+bundle exec rake db:migrate
 bundle exec rake db:seed
 ```
 
@@ -355,7 +355,18 @@ Let's start by creating the PostgreSQL instance.
 
 Go to the [Render dashboard][], click the "New +" button and select
 "PostgreSQL". Enter a name for your database. This can be whatever you like —
-we're using `my_database`. The remaining fields can be left as is.
+we're using `my_database`.
+
+For "PostgreSQL Version", first you need to check which version you have on your
+local machine. Run `psql --version` anywhere in your terminal. The output should
+look something like this, but with your version instead:
+
+```console
+$ psql --version
+psql (PostgreSQL) 15.x
+```
+
+Then, back in Render, select the version you have from the dropdown.
 
 ![Creating a new database](https://curriculum-content.s3.amazonaws.com/phase-4/deploying-rails-api/create-database.png)
 
@@ -385,12 +396,12 @@ been added to the list of databases.
 
 You can now exit `psql` using the `\q` command.
 
- > **Note**: The Render database page will not show the information about the
- > `bird_app_db` database; it will only show the name you assigned when you
- > created the PostgreSQL instance on Render (`my_database`). To see any other
- > databases you have on your PostgreSQL instance, you'll need to use `psql`.
- > For now, be sure to make a note of your new database's name as we'll need to
- > use it in the next step.
+> **Note**: The Render database page will not show the information about the
+> `bird_app_db` database; it will only show the name you assigned when you
+> created the PostgreSQL instance on Render (`my_database`). To see any other
+> databases you have on your PostgreSQL instance, you'll need to use `psql`. For
+> now, be sure to make a note of your new database's name as we'll need to use
+> it in the next step.
 
 ### Create the Web Service on Render
 
@@ -493,10 +504,9 @@ troubleshoot:
 - If you're on a Mac and got a server connection error when you tried to run
   `rails db:create`, one option for solving this problem for Mac users is to
   install the Postgres app. To do this, first uninstall `postgresql` by running
-  `brew remove postgresql`. Next, download the app from the
-  [Postgres downloads page][] and install it. Launch the app and click
-  "Initialize" to create a new server. You should now be able to run
-  `rails db:create`.
+  `brew remove postgresql`. Next, download the app from the [Postgres downloads
+  page][] and install it. Launch the app and click "Initialize" to create a new
+  server. You should now be able to run `rails db:create`.
 
 - If you're using WSL and got the following error running `rails db:create`:
 
@@ -523,8 +533,8 @@ troubleshoot:
 
 ### Free Web Services
 
-According to Render's documentation on its [Free Web
-Services](https://render.com/docs/free#free-web-services):
+According to Render's documentation on its
+[Free Web Services](https://render.com/docs/free#free-web-services):
 
 > Web Services on the free plan are automatically spun down after 15 minutes of
 > inactivity. When a new request for a free service comes in, Render spins it up
@@ -567,8 +577,8 @@ To review, the process is:
 1. On the page for your PostgreSQL instance, scroll down to the "Connections"
    section and copy the PSQL command.
 2. Run the command in the terminal.
-3. At the PSQL prompt, run the command to create the database: `CREATE DATABASE
-   <db_name>;`.
+3. At the PSQL prompt, run the command to create the database:
+   `CREATE DATABASE <db_name>;`.
 4. Run `\q` to exit PSQL.
 5. In Render, click the "New+" button and select "Web Service".
 6. Enter a name for your app and set the Environment to Ruby.
@@ -605,11 +615,13 @@ Before you move on, make sure you can answer the following questions:
 - [Getting Started with Ruby on Rails on Render][getting started with rails]
 - [Render Databases Guide][databases guide]
 
-[Render signup]: https://dashboard.render.com/register
-[postgresql wsl]: https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-database#install-postgresql
+[render signup]: https://dashboard.render.com/register
+[postgresql wsl]:
+  https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-database#install-postgresql
 [getting started with rails]: https://render.com/docs/deploy-rails
-[Render dashboard]: https://dashboard.render.com/
+[render dashboard]: https://dashboard.render.com/
 [databases guide]: https://render.com/docs/databases
 [postgres downloads page]: https://postgresapp.com/downloads.html
-[multiple dbs]: https://render.com/docs/databases#multiple-databases-in-a-single-postgresql-instance
+[multiple dbs]:
+  https://render.com/docs/databases#multiple-databases-in-a-single-postgresql-instance
 [psql]: https://www.postgresql.org/docs/current/app-psql.html
